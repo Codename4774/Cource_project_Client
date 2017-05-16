@@ -7,17 +7,39 @@ using System.Drawing;
 
 namespace Bomberman_client.GameClasses
 {
-    public class Map
+    public class PhysicalMap
     {
-        private int[][] mapMatrix;
-        public int[][] MapMatrix
+        private byte[][] mapMatrix1;
+        private byte[][] mapMatrix2;
+        public enum NumbOfMapMatrix { FIRST, SECOND };
+        public NumbOfMapMatrix currMatrix;
+        public byte[][] MapMatrix
         {
             get
             {
-                return mapMatrix;
+                switch(currMatrix)
+                {
+                    case NumbOfMapMatrix.FIRST:
+                        {
+                            return mapMatrix1;
+                        }
+                        break;
+                    case NumbOfMapMatrix.SECOND:
+                        {
+                            return mapMatrix2;
+                        }
+                        break;
+                    default:
+                        {
+                            return mapMatrix1;
+                        }
+                        break;
+
+                }
             }
             private set
-            { }
+            {
+            }
         }
         private int width;
         public int Width
@@ -42,25 +64,61 @@ namespace Bomberman_client.GameClasses
             }
 
         }
-        public Map(int[][] mapMatrix)
+        public PhysicalMap(byte[][] mapMatrix)
         {
-            this.mapMatrix = mapMatrix;
+            this.mapMatrix1 = mapMatrix;
         }
 
-        public Map(int width, int height)
+        public void ClearCurrMatrix()
         {
-            mapMatrix = new int[height][];
             for (int i = 0; i < height; i++)
             {
-                mapMatrix[i] = new int[width];
+                for (int j = 0; j < width; j++)
+                {
+                    MapMatrix[i][j] = 0;
+                }
+            }
+        }
+
+        public void SwitchMatrix()
+        {
+            if (currMatrix == NumbOfMapMatrix.FIRST)
+            {
+                currMatrix = NumbOfMapMatrix.SECOND;
+            }
+            else
+            {
+                currMatrix = NumbOfMapMatrix.FIRST;
+            }
+        }
+
+        public PhysicalMap(int width, int height)
+        {
+            mapMatrix1 = new byte[height][];
+            mapMatrix2 = new byte[height][];
+            for (int i = 0; i < height; i++)
+            {
+                mapMatrix1[i] = new byte[width];
+            }
+            for (int i = 0; i < height; i++)
+            {
+                mapMatrix2[i] = new byte[width];
             }
             for (int i = 0; i < height; i++)
             {
                 for (int j = 0; j < width; j++)
                 {
-                    mapMatrix[i][j] = 0;
+                    mapMatrix1[i][j] = 0;
                 }
             }
+            for (int i = 0; i < height; i++)
+            {
+                for (int j = 0; j < width; j++)
+                {
+                    mapMatrix1[i][j] = 0;
+                }
+            }
+            currMatrix = NumbOfMapMatrix.FIRST;
             this.width = width;
             this.height = height;
         }

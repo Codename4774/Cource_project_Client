@@ -25,7 +25,8 @@ namespace Bomberman_client
             gameCore = new GameClasses.GameCore
                 (
                     MainField.Width, MainField.Height, graphicsControl, "azaza",
-                    new Size(24, 32), new Size(14, 16), new Bitmap("bomberman_new.png"), new Bitmap("bomb.png"), new Bitmap("wall.png")
+                    new Size(24, 32), new Size(24, 24), new Bitmap("bomberman_new.png"), new Bitmap("bomb.png"),
+                    new Bitmap("BombExplosion.png"), new Bitmap("wall.png")
                 );
 
             this.KeyUp += gameCore.KeyUpEvent;

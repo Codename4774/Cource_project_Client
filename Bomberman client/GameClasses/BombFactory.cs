@@ -11,15 +11,13 @@ namespace Bomberman_client.GameClasses
     {
         private Image bombSprite;
         private Size bombSize;
-        public Bomb.DeleteBomb deleteBombFunc;
-        public Map map;
+        public PhysicalObject.DeleteObjectFunc deleteBombFunc;
         public Bomb GetBomb(Player.BombLevel bombLevel, Point location)
         {
-            return new Bomb(location, bombSprite, (int)bombLevel, map, deleteBombFunc );
+            return new Bomb(location, bombSprite, (int)bombLevel, deleteBombFunc );
         }
-        public BombFactory(Map map, Image bombSprite, Size bombSize, Bomb.DeleteBomb deleteFunc)
+        public BombFactory(Image bombSprite, Size bombSize, PhysicalObject.DeleteObjectFunc deleteFunc)
         {
-            this.map = map;
             this.bombSprite = bombSprite;
             this.bombSize = bombSize;
             deleteBombFunc = deleteFunc;

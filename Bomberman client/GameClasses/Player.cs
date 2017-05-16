@@ -24,7 +24,26 @@ namespace Bomberman_client.GameClasses
 
         private int step = 4;
 
-        public bool isObjectOnWay(Map map)
+        public delegate void SpawnPlayerFunc();
+
+        private bool isDead;
+        public bool IsDead 
+        {
+            set
+            {
+                isDead = value;
+            }
+            get
+            {
+                return isDead;
+            }
+        }
+
+        public BombFactory bombFactory;
+
+        public bool isMoved;
+
+        public bool isObjectOnWay(PhysicalMap map)
         {
             bool result = false;
             switch (direction)
@@ -33,7 +52,7 @@ namespace Bomberman_client.GameClasses
                     {
                         for (int j = X; j < X + size.Width; j++)
                         {
-                            if (map.MapMatrix[Y][j] == 1)
+                            if (map.MapMatrix[Y - 1][j] == 1)
                             {
                                 return true;
                             }
@@ -44,7 +63,7 @@ namespace Bomberman_client.GameClasses
                     {
                         for (int j = X; j < X + size.Width; j++)
                         {
-                            if (map.MapMatrix[Y + size.Height - 1][j] == 1)
+                            if (map.MapMatrix[Y + size.Height + 1][j] == 1)
                             {
                                 return true;
                             }
@@ -55,7 +74,7 @@ namespace Bomberman_client.GameClasses
                     {
                         for (int i = Y; i < Y + size.Height; i++)
                         {
-                            if (map.MapMatrix[i][X] == 1)
+                            if (map.MapMatrix[i][X  - 1] == 1)
                             {
                                 return true;
                             }
@@ -66,7 +85,7 @@ namespace Bomberman_client.GameClasses
                     {
                         for (int i = Y; i < Y + size.Height; i++)
                         {
-                            if (map.MapMatrix[i][X + size.Width - 1] == 1)
+                            if (map.MapMatrix[i][X + size.Width] == 1)
                             {
                                 return true;
                             }
@@ -76,18 +95,17 @@ namespace Bomberman_client.GameClasses
             }
             return result;
         }
-        public void OnMove(Map map)
+        public void OnMove(PhysicalMap map)
         {
             if (isMoved)
             {
-                ClearPrevPlace(map);
-                if (!isObjectOnWay(map))
+                switch (direction)
                 {
-                    switch (direction)
-                    {
-                        case Player.Direction.UP:
+                    case Player.Direction.UP:
+                        {
+                            if (Y > 0)
                             {
-                                if (Y > 0)
+                                if (!isObjectOnWay(map))
                                 {
                                     Y -= step;
                                     if (currAnimState == AnimState.TURNUP)
@@ -107,10 +125,13 @@ namespace Bomberman_client.GameClasses
                                     }
                                 }
                             }
-                            break;
-                        case Player.Direction.DOWN:
+                        }
+                        break;
+                    case Player.Direction.DOWN:
+                        {
+                            if ((map.Height > (Y + size.Height + step)))
                             {
-                                if ((map.Height > (Y + size.Height + step)))
+                                if (!isObjectOnWay(map))
                                 {
                                     Y += step;
                                     if (currAnimState == AnimState.TURNDOWN)
@@ -129,15 +150,18 @@ namespace Bomberman_client.GameClasses
                                         }
                                     }
                                 }
-                                else
-                                {
-                                    Y = map.Height - size.Height;
-                                }
                             }
-                            break;
-                        case Player.Direction.LEFT:
+                            else
                             {
-                                if (X > 0)
+                                Y = map.Height - size.Height;
+                            }
+                        }
+                        break;
+                    case Player.Direction.LEFT:
+                        {
+                            if (X > 0)
+                            {
+                                if (!isObjectOnWay(map))
                                 {
                                     X -= step;
                                     if (currAnimState == AnimState.TURNLEFT)
@@ -156,12 +180,15 @@ namespace Bomberman_client.GameClasses
                                         }
                                     }
                                 }
-
                             }
-                            break;
-                        case Player.Direction.RIGHT:
+
+                        }
+                        break;
+                    case Player.Direction.RIGHT:
+                        {
+                            if ((map.Width > (X + size.Width + step)))
                             {
-                                if ((map.Width > (X + size.Width + step)))
+                                if (!isObjectOnWay(map))
                                 {
                                     X += step;
                                     if (currAnimState == AnimState.TURNRIGHT)
@@ -179,17 +206,16 @@ namespace Bomberman_client.GameClasses
                                             currAnimState = AnimState.TURNRIGHT1;
                                         }
                                     }
-
-                                }
-                                else
-                                {
-                                    X = map.Width - size.Width;
                                 }
                             }
-                            break;
-                    }
+                            else
+                            {
+                                X = map.Width - size.Width;
+                            }
+                        }
+                        break;
                 }
-                ChangeMapMatrix(map);
+
             }
             else
             {
@@ -303,17 +329,17 @@ namespace Bomberman_client.GameClasses
             }
             return result;
         }
-        public BombFactory bombFactory;
 
-        public bool isMoved;
 
-        public Player(Point location, Image sprite, Size spriteSize, string name, Image bombSprite, Size bombSize, Bomb.DeleteBomb deleteFunc, Map map)
-            : base(location, sprite, spriteSize)
+        public Player(Point location, Image sprite, Size spriteSize, string name, DeleteObjectFunc deletePlayerFunc, Image bombSprite, Size bombSize, DeleteObjectFunc deleteBombFunc)
+            : base(location, sprite, spriteSize, deletePlayerFunc)
         {
             thisName = name;
             isMoved = false;
-     
-            bombFactory = new BombFactory(map, bombSprite, bombSize, deleteFunc);
+
+            isDead = false;
+
+            bombFactory = new BombFactory(bombSprite, bombSize, deleteBombFunc);
         }
     }
 }

@@ -9,6 +9,6 @@ namespace Bomberman_client.GameInterfaces
 {
     public interface IMovable
     {
-        void OnMove(Map map);
+        void OnMove(PhysicalMap PhysicalMap);
     }
 }
