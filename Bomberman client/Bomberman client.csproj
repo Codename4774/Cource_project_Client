@@ -71,7 +71,7 @@
     <Compile Include="GameClasses\Explosion.cs" />
     <Compile Include="GameClasses\PartExplosion.cs" />
     <Compile Include="GameClasses\GameCore.cs" />
-    <Compile Include="GameClasses\ScriptState.cs" />
+    <Compile Include="GameClasses\SimpleScript.cs" />
     <Compile Include="GameClasses\ScriptEngine.cs" />
     <Compile Include="GameInterfaces\IMovable.cs" />
     <Compile Include="GameClasses\Map.cs" />

@@ -13,6 +13,7 @@ namespace Bomberman_client.GameClasses
         public PhysicalMap map;
         public Player player;
         public List<Bomb> bombs;
+        public List<Explosion> explosions;
 
         private Graphics graphicControl;
         private BufferedGraphicsContext currentContext = new BufferedGraphicsContext();
@@ -36,8 +37,14 @@ namespace Bomberman_client.GameClasses
 
         private Image bombTexture;
         private Image bombExplosionTexture;
-        private Image playerSprite;
-        private Image wallSprite;
+        private Image playerTexture;
+        private Image wallTexture;
+        private Image explosionCenterTexture;
+        private Image explosionLeftEdgeTexture;
+        private Image explosionRightEdgeTexture;
+        private Image explosionUpEdgeTexture;
+        private Image explosionBottomEdgeTexture;
+
 
 
         public void RedrawFunc()
@@ -74,6 +81,10 @@ namespace Bomberman_client.GameClasses
             {
                 bombs[i].ChangeMapMatrix(map);
             }
+            for (int i = 0; i < explosions.Count; i++)
+            {
+                explosions[i].ChangePhysicalMap(map);
+            }
         }
 
         public void TimerEvent(object sender, EventArgs e)
@@ -83,7 +94,6 @@ namespace Bomberman_client.GameClasses
             map.ClearCurrMatrix();
             map.SwitchMatrix();
             ChangePhysicalState();
-
         }
         public void KeyPressEvent(object sender, KeyPressEventArgs e)
         {
@@ -140,7 +150,6 @@ namespace Bomberman_client.GameClasses
         {
             var temp = player as Player;
 
-            temp.ClearPrevPlace(map);
             temp.IsDead = true;
         }
 
@@ -148,16 +157,26 @@ namespace Bomberman_client.GameClasses
         {
             var temp = bomb as Bomb;
 
-            scriptEngine.StartSript(temp, bombExplosionTexture, DeleteBombFromField, 100, 3);
+            scriptEngine.StartSimpleScript(temp, bombExplosionTexture, DeleteBombFromField, 100, 3);
         }
 
         public void DeleteBombFromField(object bomb)
         {
             var temp = bomb as Bomb;
 
-            temp.ClearPrevPlace(map);
             bombs.Remove(temp);
+
+            //explosions.Add(new Explosion)
+            //scriptEngine.StartExplosion(explosions.Last(), explosions.Last().onEndExplosionFunc, 100, 7);
         }
+
+        public void DeleteExplosionFromField(object explosion)
+        {
+            var temp = explosion as Explosion;
+
+            explosions.Remove(temp);
+        }
+
         void GetDirection()
         {
             if (isUpPressed)
@@ -215,6 +234,18 @@ namespace Bomberman_client.GameClasses
             }
             
         }
+
+        private void LoadImages(string resDir)
+        {
+            this.bombTexture = new Bitmap(resDir + "Bomb\\bomb.png");
+            this.bombExplosionTexture = new Bitmap(resDir + "Bomb\\BombExplosion.png");
+            this.playerTexture = new Bitmap(resDir + "Player\\bomberman_new.png");
+            this.explosionCenterTexture = new Bitmap(resDir + "Explosion\\ExplosionCenter.png");
+            this.explosionUpEdgeTexture= new Bitmap(resDir + "Explosion\\ExplosionUpEdge.png");
+            this.explosionBottomEdgeTexture = new Bitmap(resDir + "Explosion\\ExplosionBottomEdge.png");
+            this.explosionLeftEdgeTexture = new Bitmap(resDir + "Explosion\\ExplosionLeftEdge.png");
+            this.explosionRightEdgeTexture = new Bitmap(resDir + "Explosion\\ExplosionRightEdge.png");
+        }
         public void startCore()
         {
             timer.Start();
@@ -222,7 +253,7 @@ namespace Bomberman_client.GameClasses
         public GameCore
             (
                 int width, int height, Graphics graphicControl, string playerName, Size playerSize,
-                Size bombSize, Image playerSprite, Image bombSprite, Image bombExplosionImage, Image wallImage
+                Size bombSize, Size explosionSize, string dirResources
             )
         {
             this.map = new PhysicalMap(width, height);
@@ -234,11 +265,6 @@ namespace Bomberman_client.GameClasses
             timer.Interval = delay;
             timer.Tick += TimerEvent;
 
-            this.playerSprite = playerSprite;
-            this.wallSprite = wallImage;
-            this.bombTexture = bombSprite;
-            this.bombExplosionTexture = bombExplosionImage;
-
             buffer1 = currentContext.Allocate(graphicControl, new Rectangle(0, 0, width, height));
             buffer2 = currentContext.Allocate(graphicControl, new Rectangle(0, 0, width, height));
             currBuffer = buffer1;
@@ -246,7 +272,8 @@ namespace Bomberman_client.GameClasses
 
             scriptEngine = new ScriptEngine();
 
-            this.player = new Player(new Point(20, 20), playerSprite, playerSize, playerName, DeletePlayerFromField, bombSprite, bombSize, ExplosionBomb);
+            LoadImages(dirResources);
+            this.player = new Player(new Point(20, 20), playerTexture, playerSize, playerName, DeletePlayerFromField, bombTexture, bombSize, ExplosionBomb);
         }
     }
 }
