@@ -20,7 +20,7 @@ namespace Bomberman_client.GameClasses
         public AnimState currAnimState;
         public enum BombLevel { low = 3, medium = 4, high = 5 };
 
-        public BombLevel bombLevel;
+        public BombLevel bombLevel = BombLevel.low;
 
         private int step = 4;
 
@@ -103,7 +103,7 @@ namespace Bomberman_client.GameClasses
                 {
                     case Player.Direction.UP:
                         {
-                            if (Y > 0)
+                            if (Y - step > 0)
                             {
                                 if (!isObjectOnWay(map))
                                 {
@@ -124,6 +124,10 @@ namespace Bomberman_client.GameClasses
                                         }
                                     }
                                 }
+                            }
+                            else
+                            {
+                                Y = 0;
                             }
                         }
                         break;
@@ -159,7 +163,7 @@ namespace Bomberman_client.GameClasses
                         break;
                     case Player.Direction.LEFT:
                         {
-                            if (X > 0)
+                            if (X - step > 0)
                             {
                                 if (!isObjectOnWay(map))
                                 {
@@ -180,6 +184,10 @@ namespace Bomberman_client.GameClasses
                                         }
                                     }
                                 }
+                            }
+                            else
+                            {
+                                X = 0;
                             }
 
                         }
@@ -245,6 +253,21 @@ namespace Bomberman_client.GameClasses
 
             }
             
+        }
+
+        public bool isPlayerBlowedUp(PhysicalMap map)
+        {
+            for (int i = Y; i < Y + size.Height; i++)
+            {
+                for (int j = X; j < X + size.Width; j++)
+                {
+                    if (map.MapMatrix[i][j] == 2)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
 
         private string thisName;

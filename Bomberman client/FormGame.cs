@@ -25,7 +25,7 @@ namespace Bomberman_client
             gameCore = new GameClasses.GameCore
                 (
                     MainField.Width, MainField.Height, graphicsControl, "azaza",
-                    new Size(24, 32), new Size(24, 24),  new Size(32, 32), (Environment.CurrentDirectory + "\\Resources\\")
+                    new Size(24, 32), new Size(24, 24),  new Size(24, 24), new Size(24, 24), (Environment.CurrentDirectory + "\\Resources\\")
                 );
             this.KeyUp += gameCore.KeyUpEvent;
             this.KeyPress += gameCore.KeyPressEvent;

@@ -7,37 +7,57 @@ using System.Drawing;
 
 namespace Bomberman_client.GameClasses
 {
-    class PartExplosion
+    public class PartExplosion
     {
         private int countStates;
         private int currState;
         private int currSpriteOffset;
-        public Bitmap sprite;
+        public Bitmap texture;
         public Bitmap currTexture;
-        Size size;
-        private Point location;
-        //public enum KindPartOfExplosion { CENTER, EDGE, MIDDLE };
+        public Size size;
+        public Point location;
+        private Explosion.OnEndAllExplosionFunc onEndFunc;
         public void ChangeState()
         {
-            currTexture = sprite.Clone(new Rectangle(new Point(currSpriteOffset, 0), size), sprite.PixelFormat);
+            currTexture = new Bitmap(texture.Clone(new Rectangle(new Point(currSpriteOffset, 0), size), texture.PixelFormat));
             currSpriteOffset += size.Width;
             currState++;
         }
         public void ChangePhysicalMap(PhysicalMap map)
         {
-            for (int i = location.Y; i < location.Y + size.Height; i++)
+            int firstBorder;
+            if (location.Y + size.Height > map.Height)
             {
-                for (int j = location.X; j < location.X + size.Width; j++)
+                firstBorder = map.Height;
+            }
+            else
+            {
+                firstBorder = location.Y + size.Height;
+            }
+            int secondBorder;
+            if (location.X + size.Width > map.Width)
+            {
+                secondBorder = map.Width;
+            }
+            else
+            {
+                secondBorder = location.X + size.Width;
+            }
+            for (int i = location.Y; i < firstBorder; i++)
+            {
+                for (int j = location.X; j < secondBorder; j++)
                 {
                     map.MapMatrix[i][j] = 2;
                 }
             }
         }
-        public PartExplosion(Image sprite, Size size, Point location, int countStates)
+        public PartExplosion(Image texture, Size size, Point location, int countStates, Explosion.OnEndAllExplosionFunc onEndFunc)
         {
-            this.sprite = sprite as Bitmap;
+            this.texture = new Bitmap((Bitmap)(texture as Bitmap).Clone());
             this.size = size;
             this.countStates = countStates;
+            this.onEndFunc = onEndFunc;
+            this.location = location;
             currState = 0;
             currSpriteOffset = 0;
         }

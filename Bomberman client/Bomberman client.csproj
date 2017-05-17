@@ -69,6 +69,7 @@
       <DependentUpon>FormGame.cs</DependentUpon>
     </Compile>
     <Compile Include="GameClasses\Explosion.cs" />
+    <Compile Include="GameClasses\ExplosionScript.cs" />
     <Compile Include="GameClasses\PartExplosion.cs" />
     <Compile Include="GameClasses\GameCore.cs" />
     <Compile Include="GameClasses\SimpleScript.cs" />

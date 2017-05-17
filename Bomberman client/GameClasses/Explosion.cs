@@ -7,7 +7,7 @@ using System.Drawing;
 
 namespace Bomberman_client.GameClasses
 {
-    class Explosion
+    public class Explosion
     {
         private int radius;
         public List<PartExplosion> partsExplosionLeft;
@@ -52,9 +52,8 @@ namespace Bomberman_client.GameClasses
             (
                 Image explosionTextureCenter, Image explosionTextureUpEdge,
                 Image explosionTextureBottomEdge, Image explosionTextureLeftEdge,
-                 Image explosionTextureRightEdge, Image explosionTextureUpMiddle,
-                Image explosionTextureBottomMiddle, Image explosionTextureLeftMiddle,
-                 Image explosionTextureRightMiddle, Size size, Point location, int radius,
+                 Image explosionTextureRightEdge, Image explosionTextureVerticalMiddle,
+                Image explosionTextureHorizontalMiddle, Size size, Point location, int radius,
                 PhysicalMap map
             )
         {
@@ -66,27 +65,27 @@ namespace Bomberman_client.GameClasses
             countParts = 0;
             for (int i = 0; i < radius; i++)
             {
-                if ((location.X - size.Width) > 0)
+                if ((location.X - size.Width * (i + 1)) > 0)
                 {
-                    if (i == radius - 1)
+                    if (i < radius - 1)
                     {
-                        partsExplosionLeft.Add(new PartExplosion(explosionTextureLeftMiddle, size, new Point((location.X - size.Width), location.Y), countStates));
+                        partsExplosionLeft.Add(new PartExplosion(explosionTextureHorizontalMiddle, size, new Point((location.X - size.Width * (i + 1)), location.Y), countStates, onEndExplosionFunc));
                     }
                     else
                     {
-                        partsExplosionLeft.Add(new PartExplosion(explosionTextureLeftEdge, size, new Point((location.X - size.Width), location.Y), countStates));
+                        partsExplosionLeft.Add(new PartExplosion(explosionTextureLeftEdge, size, new Point((location.X - size.Width * (i + 1)), location.Y), countStates, onEndExplosionFunc));
                     }
                     countParts++;
                 }
                 else
                 {
-                    if (i == radius - 1)
+                    if (i < radius - 1)
                     {
-                        partsExplosionLeft.Add(new PartExplosion(explosionTextureLeftMiddle, size, new Point(0, location.Y), countStates));
+                        partsExplosionLeft.Add(new PartExplosion(explosionTextureHorizontalMiddle, size, new Point(0, location.Y), countStates, onEndExplosionFunc));
                     }
                     else
                     {
-                        partsExplosionLeft.Add(new PartExplosion(explosionTextureLeftEdge, size, new Point(0, location.Y), countStates));
+                        partsExplosionLeft.Add(new PartExplosion(explosionTextureLeftEdge, size, new Point(0, location.Y), countStates, onEndExplosionFunc));
                     }
                     countParts++;
                     break;
@@ -94,27 +93,27 @@ namespace Bomberman_client.GameClasses
             }
             for (int i = 0; i < radius; i++)
             {
-                if ((location.X + size.Width) < map.Width)
+                if ((location.X + size.Width * (i + 1) ) < map.Width)
                 {
-                    if (i == radius - 1)
+                    if (i < radius - 1)
                     {
-                        partsExplosionLeft.Add(new PartExplosion(explosionTextureRightMiddle, size, new Point((location.X + size.Width), location.Y), countStates));
+                        partsExplosionRight.Add(new PartExplosion(explosionTextureHorizontalMiddle, size, new Point((location.X + size.Width * (i + 1)), location.Y), countStates, onEndExplosionFunc));
                     }
                     else
                     {
-                        partsExplosionLeft.Add(new PartExplosion(explosionTextureRightEdge, size, new Point((location.X + size.Width), location.Y), countStates));
+                        partsExplosionRight.Add(new PartExplosion(explosionTextureRightEdge, size, new Point((location.X + size.Width * (i + 1)), location.Y), countStates, onEndExplosionFunc));
                     }
                     countParts++;
                 }
                 else
                 {
-                    if (i == radius - 1)
+                    if (i < radius - 1)
                     {
-                        partsExplosionLeft.Add(new PartExplosion(explosionTextureRightMiddle, size, new Point((map.Width - size.Width), location.Y), countStates));
+                        partsExplosionRight.Add(new PartExplosion(explosionTextureHorizontalMiddle, size, new Point((map.Width - size.Width), location.Y), countStates, onEndExplosionFunc));
                     }
                     else
                     {
-                        partsExplosionLeft.Add(new PartExplosion(explosionTextureRightEdge, size, new Point(map.Width - size.Width, location.Y), countStates));
+                        partsExplosionRight.Add(new PartExplosion(explosionTextureRightEdge, size, new Point(map.Width - size.Width, location.Y), countStates, onEndExplosionFunc));
                     }
                     countParts++;
                     break;
@@ -122,28 +121,28 @@ namespace Bomberman_client.GameClasses
             }
             for (int i = 0; i < radius; i++)
             {
-                if ((location.Y - size.Height) > 0)
+                if ((location.Y - size.Height * (i + 1)) > 0)
                 {
-                    if (i == radius - 1)
+                    if (i < radius - 1)
                     {
-                        partsExplosionLeft.Add(new PartExplosion(explosionTextureUpMiddle, size, new Point(location.X, location.Y - size.Height), countStates));
+                        partsExplosionUp.Add(new PartExplosion(explosionTextureVerticalMiddle, size, new Point(location.X, location.Y - size.Height * (i + 1)), countStates, onEndExplosionFunc));
                                             
                     }
                     else
                     {
-                        partsExplosionLeft.Add(new PartExplosion(explosionTextureUpEdge, size, new Point(location.X, location.Y - size.Height), countStates));
+                        partsExplosionUp.Add(new PartExplosion(explosionTextureUpEdge, size, new Point(location.X, location.Y - size.Height * (i + 1)), countStates, onEndExplosionFunc));
                     }
                     countParts++;
                 }
                 else
                 {
-                    if (i == radius - 1)
+                    if (i < radius - 1)
                     {
-                        partsExplosionLeft.Add(new PartExplosion(explosionTextureUpMiddle, size, new Point(location.X, 0), countStates));
+                        partsExplosionUp.Add(new PartExplosion(explosionTextureVerticalMiddle, size, new Point(location.X, 0), countStates, onEndExplosionFunc));
                     }
                     else
                     {
-                        partsExplosionLeft.Add(new PartExplosion(explosionTextureUpEdge, size, new Point(location.X, 0), countStates));
+                        partsExplosionUp.Add(new PartExplosion(explosionTextureUpEdge, size, new Point(location.X, 0), countStates, onEndExplosionFunc));
                     }
                     countParts++;
                     break;
@@ -151,34 +150,34 @@ namespace Bomberman_client.GameClasses
             }
             for (int i = 0; i < radius; i++)
             {
-                if ((location.Y + size.Height) < map.Height)
+                if ((location.Y + size.Height * (i + 1)) < map.Height)
                 {
-                    if (i == radius - 1)
+                    if (i < radius - 1)
                     {
-                        partsExplosionLeft.Add(new PartExplosion(explosionTextureBottomMiddle, size, new Point(location.X, location.Y + size.Height), countStates));
+                        partsExplosionBottom.Add(new PartExplosion(explosionTextureVerticalMiddle, size, new Point(location.X, location.Y + size.Height * (i + 1)), countStates, onEndExplosionFunc));
                     }
                     else
                     {
-                        partsExplosionLeft.Add(new PartExplosion(explosionTextureBottomEdge, size, new Point(location.X, location.Y + size.Height), countStates));
+                        partsExplosionBottom.Add(new PartExplosion(explosionTextureBottomEdge, size, new Point(location.X, location.Y + size.Height * (i + 1)), countStates, onEndExplosionFunc));
                     }
                     countParts++;
                 }
                 else
                 {
-                    if (i == radius - 1)
+                    if (i < radius - 1)
                     {
-                        partsExplosionLeft.Add(new PartExplosion(explosionTextureBottomMiddle, size, new Point(location.X, map.Height - location.Y), countStates));
+                        partsExplosionBottom.Add(new PartExplosion(explosionTextureVerticalMiddle, size, new Point(location.X, map.Height - size.Height), countStates, onEndExplosionFunc));
                     }
                     else
                     {
-                        partsExplosionLeft.Add(new PartExplosion(explosionTextureBottomEdge, size, new Point(location.X, map.Height - location.Y), countStates));
+                        partsExplosionBottom.Add(new PartExplosion(explosionTextureBottomEdge, size, new Point(location.X, map.Height - size.Height), countStates, onEndExplosionFunc));
                     }
                     countParts++;
                     break;
                 }
             }
 
-            partExplosionCenter = new PartExplosion(explosionTextureCenter, size, location, countStates);
+            partExplosionCenter = new PartExplosion(explosionTextureCenter, size, location, countStates, onEndExplosionFunc);
             countParts++;
         }
         public void ChangePhysicalMap(PhysicalMap map)
@@ -201,13 +200,76 @@ namespace Bomberman_client.GameClasses
             }
             partExplosionCenter.ChangePhysicalMap(map);
         }
+        public void ClearSprites()
+        {
+            for (int i = 0; i < partsExplosionBottom.Count; i++)
+            {
+                partsExplosionBottom[i].texture.Dispose();
+            }
+            for (int i = 0; i < partsExplosionUp.Count; i++)
+            {
+                partsExplosionUp[i].texture.Dispose();
+            }
+            for (int i = 0; i < partsExplosionLeft.Count; i++)
+            {
+                partsExplosionLeft[i].texture.Dispose();
+            }
+            for (int i = 0; i < partsExplosionRight.Count; i++)
+            {
+                partsExplosionRight[i].texture.Dispose();
+            }
+            partExplosionCenter.texture.Dispose();
+        }
+        public void DrawExplosion(BufferedGraphics currBuffer)
+        {
+            for (int j = 0; j < partsExplosionBottom.Count; j++)
+            {
+                currBuffer.Graphics.DrawImage(partsExplosionBottom[j].currTexture, partsExplosionBottom[j].location);
+            }
+            for (int j = 0; j < partsExplosionBottom.Count; j++)
+            {
+                currBuffer.Graphics.DrawImage(partsExplosionBottom[j].currTexture, partsExplosionBottom[j].location);
+            }
+            for (int j = 0; j < partsExplosionUp.Count; j++)
+            {
+                currBuffer.Graphics.DrawImage(partsExplosionUp[j].currTexture, partsExplosionUp[j].location);
+            }
+            for (int j = 0; j < partsExplosionLeft.Count; j++)
+            {
+                currBuffer.Graphics.DrawImage(partsExplosionLeft[j].currTexture, partsExplosionLeft[j].location);
+            }
+            for (int j = 0; j < partsExplosionRight.Count; j++)
+            {
+                currBuffer.Graphics.DrawImage(partsExplosionRight[j].currTexture, partsExplosionRight[j].location);
+            }
+            currBuffer.Graphics.DrawImage(partExplosionCenter.currTexture, partExplosionCenter.location);
+        }
+        ~Explosion()
+        {
+            for (int i = 0; i < partsExplosionBottom.Count; i++)
+            {
+                partsExplosionBottom[i].texture.Dispose();
+            }
+            for (int i = 0; i < partsExplosionUp.Count; i++)
+            {
+                partsExplosionUp[i].texture.Dispose();
+            }
+            for (int i = 0; i < partsExplosionLeft.Count; i++)
+            {
+                partsExplosionLeft[i].texture.Dispose();
+            }
+            for (int i = 0; i < partsExplosionRight.Count; i++)
+            {
+                partsExplosionRight[i].texture.Dispose();
+            }
+            partExplosionCenter.texture.Dispose();
+        }
         public Explosion
             (
                 Image explosionTextureCenter, Image explosionTextureUpEdge,
                 Image explosionTextureBottomEdge, Image explosionTextureLeftEdge,
-                 Image explosionTextureRightEdge, Image explosionTextureUpMiddle,
-                Image explosionTextureBottomMiddle, Image explosionTextureLeftMiddle,
-                 Image explosionTextureRightMiddle, Size size, Point location, int radius,
+                 Image explosionTextureRightEdge, Image explosionTextureVerticalMiddle,
+                Image explosionTextureHorizontalMiddle, Size size, Point location, int radius,
                 PhysicalMap map, OnEndAllExplosionFunc funcEnd
             )
         {
@@ -216,9 +278,9 @@ namespace Bomberman_client.GameClasses
             this.size = size;
             this.radius = radius;
             InitExplosion(explosionTextureCenter, explosionTextureUpEdge, explosionTextureBottomEdge,  explosionTextureLeftEdge,
-                          explosionTextureRightEdge,  explosionTextureUpMiddle,  explosionTextureBottomMiddle,
-                          explosionTextureLeftMiddle,  explosionTextureRightMiddle,  size, location, radius, map);
-
+                          explosionTextureRightEdge,  explosionTextureVerticalMiddle,  explosionTextureHorizontalMiddle,
+                          size, location, radius, map);
+            ChangeState();
         }
     }
 }

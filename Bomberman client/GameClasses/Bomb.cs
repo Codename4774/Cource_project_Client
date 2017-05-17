@@ -23,7 +23,7 @@ namespace Bomberman_client.GameClasses
             : base(location, texture)
         {
             timerExplosion = new Timer();
-            timerExplosion.Interval = 2000;
+            timerExplosion.Interval = 3000;
             this.deleteObjectFunc = deleteBombFunc;
             timerExplosion.Tick += TimerEvent;
             this.areaOfExplosion = areaOfExplosion;

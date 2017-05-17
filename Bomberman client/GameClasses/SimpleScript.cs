@@ -23,10 +23,13 @@ namespace Bomberman_client.GameClasses
             currState--;
             if (currState == 0)
             {
+                currTimer.Stop();
+                currTimer.Dispose();
+                currTimer = null;
                 temp.Dispose();
                 sprite.Dispose();
+
                 onEnd(obj);
-                currTimer.Enabled = false;
             }
             else
             {
@@ -50,17 +53,7 @@ namespace Bomberman_client.GameClasses
             this.countStates = countStates;
             this.currState = this.countStates;
             this.sprite = new Bitmap (sprite as Bitmap);
-            currTimer.Elapsed += OnTimerEvent;
-        }
-        public SimpleScript(PartExplosion explosion, ScriptEngine.OnEndFunc onEndFunc, int countStates, int delay)
-        {
-            currTimer = new Timer();
-
-            currTimer.Interval = delay;
-            this.onEnd = onEndFunc;
-            this.countStates = countStates;
-            this.currState = this.countStates;
-            this.sprite = new Bitmap(explosion.sprite as Bitmap);
+            
             currTimer.Elapsed += OnTimerEvent;
         }
     }
