@@ -9,6 +9,8 @@ namespace Bomberman_client.GameClasses
 {
     public class PhysicalMap
     {
+        public enum KindOfArea { NONE = 0, PHYSICACOBJECT = 1, EXPLOSION = 2 };
+
         private byte[][] mapMatrix1;
         private byte[][] mapMatrix2;
         public enum NumbOfMapMatrix { FIRST, SECOND };
@@ -75,7 +77,7 @@ namespace Bomberman_client.GameClasses
             {
                 for (int j = 0; j < width; j++)
                 {
-                    MapMatrix[i][j] = 0;
+                    MapMatrix[i][j] = (int)KindOfArea.NONE;
                 }
             }
         }
@@ -108,14 +110,14 @@ namespace Bomberman_client.GameClasses
             {
                 for (int j = 0; j < width; j++)
                 {
-                    mapMatrix1[i][j] = 0;
+                    mapMatrix1[i][j] = (int)KindOfArea.NONE;
                 }
             }
             for (int i = 0; i < height; i++)
             {
                 for (int j = 0; j < width; j++)
                 {
-                    mapMatrix1[i][j] = 0;
+                    mapMatrix1[i][j] = (int)KindOfArea.NONE;
                 }
             }
             currMatrix = NumbOfMapMatrix.FIRST;

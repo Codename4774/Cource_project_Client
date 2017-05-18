@@ -38,6 +38,18 @@ namespace Bomberman_client.GameClasses
                 return isDead;
             }
         }
+        private bool isDying;
+        public bool IsDying
+        {
+            set
+            {
+                isDying = value;
+            }
+            get
+            {
+                return isDying;
+            }
+        }
 
         public BombFactory bombFactory;
 
@@ -52,7 +64,7 @@ namespace Bomberman_client.GameClasses
                     {
                         for (int j = X; j < X + size.Width; j++)
                         {
-                            if (map.MapMatrix[Y - 1][j] == 1)
+                            if (map.MapMatrix[Y - 1][j] == (int)PhysicalMap.KindOfArea.PHYSICACOBJECT)
                             {
                                 return true;
                             }
@@ -63,7 +75,7 @@ namespace Bomberman_client.GameClasses
                     {
                         for (int j = X; j < X + size.Width; j++)
                         {
-                            if (map.MapMatrix[Y + size.Height + 1][j] == 1)
+                            if (map.MapMatrix[Y + size.Height + 1][j] == (int)PhysicalMap.KindOfArea.PHYSICACOBJECT)
                             {
                                 return true;
                             }
@@ -74,7 +86,7 @@ namespace Bomberman_client.GameClasses
                     {
                         for (int i = Y; i < Y + size.Height; i++)
                         {
-                            if (map.MapMatrix[i][X  - 1] == 1)
+                            if (map.MapMatrix[i][X - 1] == (int)PhysicalMap.KindOfArea.PHYSICACOBJECT)
                             {
                                 return true;
                             }
@@ -85,7 +97,7 @@ namespace Bomberman_client.GameClasses
                     {
                         for (int i = Y; i < Y + size.Height; i++)
                         {
-                            if (map.MapMatrix[i][X + size.Width] == 1)
+                            if (map.MapMatrix[i][X + size.Width] == (int)PhysicalMap.KindOfArea.PHYSICACOBJECT)
                             {
                                 return true;
                             }
@@ -261,7 +273,7 @@ namespace Bomberman_client.GameClasses
             {
                 for (int j = X; j < X + size.Width; j++)
                 {
-                    if (map.MapMatrix[i][j] == 2)
+                    if (map.MapMatrix[i][j] == (int)PhysicalMap.KindOfArea.EXPLOSION)
                     {
                         return true;
                     }
@@ -285,72 +297,75 @@ namespace Bomberman_client.GameClasses
 
         public Bitmap GetAnimState()
         {
-            Bitmap result = null;
-            Bitmap currBitmap = texture as Bitmap;
-            switch (currAnimState)
+            lock (texture)
             {
-                case AnimState.TURNUP:
-                    {
-                        result = currBitmap.Clone(new Rectangle(new Point(0, size.Height), size), texture.PixelFormat);
-                    }
-                    break;
-                case AnimState.TURNUP1:
-                    {
-                        result = currBitmap.Clone(new Rectangle(new Point(size.Width, size.Height), size), texture.PixelFormat);
-                    }
-                    break;
-                case AnimState.TURNUP2:
-                    {
-                        result = currBitmap.Clone(new Rectangle(new Point(size.Width * 2, size.Height), size), texture.PixelFormat);
-                    }
-                    break;
-                case AnimState.TURNDOWN:
-                    {
-                        result = currBitmap.Clone(new Rectangle(new Point(0, 0), size), texture.PixelFormat);
-                    }
-                    break;
-                case AnimState.TURNDOWN1:
-                    {
-                        result = currBitmap.Clone(new Rectangle(new Point(size.Width, 0), size), texture.PixelFormat);
-                    }
-                    break;
-                case AnimState.TURNDOWN2:
-                    {
-                        result = currBitmap.Clone(new Rectangle(new Point(size.Width * 2, 0), size), texture.PixelFormat);
-                    }
-                    break;
-                case AnimState.TURNLEFT:
-                    {
-                        result = currBitmap.Clone(new Rectangle(new Point(size.Width * 3, size.Height), size), texture.PixelFormat);
-                    }
-                    break;
-                case AnimState.TURNLEFT1:
-                    {
-                        result = currBitmap.Clone(new Rectangle(new Point(size.Width * 4, size.Height), size), texture.PixelFormat);
-                    }
-                    break;
-                case AnimState.TURNLEFT2:
-                    {
-                        result = currBitmap.Clone(new Rectangle(new Point(size.Width * 5, size.Height), size), texture.PixelFormat);
-                    }
-                    break;
-                case AnimState.TURNRIGHT:
-                    {
-                        result = currBitmap.Clone(new Rectangle(new Point(size.Width * 3, 0), size), texture.PixelFormat);
-                    }
-                    break;
-                case AnimState.TURNRIGHT1:
-                    {
-                        result = currBitmap.Clone(new Rectangle(new Point(size.Width * 4, 0), size), texture.PixelFormat);
-                    }
-                    break;
-                case AnimState.TURNRIGHT2:
-                    {
-                        result = currBitmap.Clone(new Rectangle(new Point(size.Width * 5, 0), size), texture.PixelFormat);
-                    }
-                    break;
+                Bitmap result = null;
+                Bitmap currBitmap = texture as Bitmap;
+                switch (currAnimState)
+                {
+                    case AnimState.TURNUP:
+                        {
+                            result = currBitmap.Clone(new Rectangle(new Point(0, size.Height), size), texture.PixelFormat);
+                        }
+                        break;
+                    case AnimState.TURNUP1:
+                        {
+                            result = currBitmap.Clone(new Rectangle(new Point(size.Width, size.Height), size), texture.PixelFormat);
+                        }
+                        break;
+                    case AnimState.TURNUP2:
+                        {
+                            result = currBitmap.Clone(new Rectangle(new Point(size.Width * 2, size.Height), size), texture.PixelFormat);
+                        }
+                        break;
+                    case AnimState.TURNDOWN:
+                        {
+                            result = currBitmap.Clone(new Rectangle(new Point(0, 0), size), texture.PixelFormat);
+                        }
+                        break;
+                    case AnimState.TURNDOWN1:
+                        {
+                            result = currBitmap.Clone(new Rectangle(new Point(size.Width, 0), size), texture.PixelFormat);
+                        }
+                        break;
+                    case AnimState.TURNDOWN2:
+                        {
+                            result = currBitmap.Clone(new Rectangle(new Point(size.Width * 2, 0), size), texture.PixelFormat);
+                        }
+                        break;
+                    case AnimState.TURNLEFT:
+                        {
+                            result = currBitmap.Clone(new Rectangle(new Point(size.Width * 3, size.Height), size), texture.PixelFormat);
+                        }
+                        break;
+                    case AnimState.TURNLEFT1:
+                        {
+                            result = currBitmap.Clone(new Rectangle(new Point(size.Width * 4, size.Height), size), texture.PixelFormat);
+                        }
+                        break;
+                    case AnimState.TURNLEFT2:
+                        {
+                            result = currBitmap.Clone(new Rectangle(new Point(size.Width * 5, size.Height), size), texture.PixelFormat);
+                        }
+                        break;
+                    case AnimState.TURNRIGHT:
+                        {
+                            result = currBitmap.Clone(new Rectangle(new Point(size.Width * 3, 0), size), texture.PixelFormat);
+                        }
+                        break;
+                    case AnimState.TURNRIGHT1:
+                        {
+                            result = currBitmap.Clone(new Rectangle(new Point(size.Width * 4, 0), size), texture.PixelFormat);
+                        }
+                        break;
+                    case AnimState.TURNRIGHT2:
+                        {
+                            result = currBitmap.Clone(new Rectangle(new Point(size.Width * 5, 0), size), texture.PixelFormat);
+                        }
+                        break;
+                }
+                return result;
             }
-            return result;
         }
 
 
@@ -361,6 +376,7 @@ namespace Bomberman_client.GameClasses
             isMoved = false;
 
             isDead = false;
+            isDying = false;
 
             bombFactory = new BombFactory(bombSprite, bombSize, deleteBombFunc);
         }

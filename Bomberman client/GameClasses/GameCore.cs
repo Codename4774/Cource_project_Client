@@ -38,6 +38,7 @@ namespace Bomberman_client.GameClasses
 
 
         private Size playerSize;
+        private Size playerOnDeathSize;
         private Size bombSize;
         private Size explosionSize;
         private Size wallSize;
@@ -45,7 +46,10 @@ namespace Bomberman_client.GameClasses
         private Image bombTexture;
         private Image bombExplosionTexture;
         private Image playerTexture;
-        private Image wallTexture;
+        private Image playerDieTexture;
+        private Image dynamicWallTexture;
+        private Image dynamicWallDestroyTexture;
+        private Image staticWallTexture;
         private Image explosionCenterTexture;
         private Image explosionLeftEdgeTexture;
         private Image explosionRightEdgeTexture;
@@ -60,6 +64,11 @@ namespace Bomberman_client.GameClasses
         {
             currBuffer.Render();
             currBuffer.Graphics.Clear(buffColor);
+            ChangeBuffer();
+            CalcBuff();
+        }
+        public void ChangeBuffer()
+        {
             if (currBuffer == buffer1)
             {
                 currBuffer = buffer2;
@@ -68,23 +77,37 @@ namespace Bomberman_client.GameClasses
             {
                 currBuffer = buffer1;
             }
-            CalcBuff();
         }
-
         public void CalcBuff()
         {
-                if (!player.IsDead)
+            if (!player.IsDead)
+            {
+                lock (player)
                 {
-                    currBuffer.Graphics.DrawImage(player.GetAnimState(), player.X, player.Y);
+                    if (!player.IsDying)
+                    {
+                        currBuffer.Graphics.DrawImage(player.GetAnimState(), player.X, player.Y);
+                    }
+                    else
+                    {
+                        currBuffer.Graphics.DrawImage(player.texture, player.X, player.Y);
+                    }
                 }
-                for (int i = 0; i < bombs.Count; i++)
+            }
+            for (int i = 0; i < bombs.Count; i++)
+            {
+                lock (bombs[i])
                 {
                     currBuffer.Graphics.DrawImage(bombs[i].texture, bombs[i].X, bombs[i].Y);
                 }
-                for (int i = 0; i < explosions.Count; i++)
+            }
+            for (int i = 0; i < explosions.Count; i++)
+            {
+                lock (explosions[i])
                 {
                     explosions[i].DrawExplosion(currBuffer);
                 }
+            }
         }
 
         public void ChangePhysicalState()
@@ -103,7 +126,7 @@ namespace Bomberman_client.GameClasses
             }
             if (player.isPlayerBlowedUp(map))
             {
-                player.IsDead = true;
+                onDeathPlayer(player);
             }
         }
 
@@ -169,6 +192,8 @@ namespace Bomberman_client.GameClasses
                         {
                             player.X = 20;
                             player.Y = 20;
+                            player.texture = playerTexture;
+                            player.IsDying = false;
                             player.IsDead = false;
                         }
                     }
@@ -176,12 +201,22 @@ namespace Bomberman_client.GameClasses
             }
         }
 
-        public void DeletePlayerFromField(PhysicalObject player)
+        public void onDeathPlayer(PhysicalObject player)
+        {
+            var temp = player as Player;
+
+
+            scriptEngine.StartSimpleScript(temp, playerDieTexture, playerOnDeathSize, DeletePlayerFromField, 200, 6);
+            
+            temp.IsDying = true;
+        }
+        public void DeletePlayerFromField(object player)
         {
             var temp = player as Player;
 
             temp.IsDead = true;
         }
+
 
         public void ExplosionBomb(PhysicalObject bomb)
         {
@@ -277,6 +312,7 @@ namespace Bomberman_client.GameClasses
             this.bombTexture = new Bitmap(resDir + "Bomb\\bomb.png");
             this.bombExplosionTexture = new Bitmap(resDir + "Bomb\\BombExplosion.png");
             this.playerTexture = new Bitmap(resDir + "Player\\bomberman_new.png");
+            this.playerDieTexture = new Bitmap(resDir + "Player\\bomberman_death.png");
             this.explosionCenterTexture = new Bitmap(resDir + "Explosion\\ExplosionCenter.png");
             this.explosionUpEdgeTexture= new Bitmap(resDir + "Explosion\\ExplosionUpEdge.png");
             this.explosionBottomEdgeTexture = new Bitmap(resDir + "Explosion\\ExplosionBottomEdge.png");
@@ -292,7 +328,7 @@ namespace Bomberman_client.GameClasses
         }
         public GameCore
             (
-                int width, int height, Graphics graphicControl, string playerName, Size playerSize,
+                int width, int height, Graphics graphicControl, string playerName, Size playerSize, Size playerOnDeathSize,
                 Size bombSize, Size explosionSize, Size wallSize, string dirResources
             )
         {
@@ -317,6 +353,7 @@ namespace Bomberman_client.GameClasses
             this.bombSize = bombSize;
             this.explosionSize = explosionSize;
             this.wallSize = wallSize;
+            this.playerOnDeathSize = playerOnDeathSize;
 
             LoadImages(dirResources);
             this.player = new Player(new Point(20, 20), playerTexture, playerSize, playerName, DeletePlayerFromField, bombTexture, bombSize, ExplosionBomb);

@@ -17,6 +17,7 @@ namespace Bomberman_client.GameClasses
         private Bitmap sprite;
         public Timer currTimer;
         private Bitmap temp;
+        Size onScriptSize;
 
         public void OnTimerEvent(object sender, EventArgs e)
         {
@@ -38,7 +39,7 @@ namespace Bomberman_client.GameClasses
         }
         private void SetImage()
         {
-            temp = new Bitmap(sprite.Clone(new Rectangle(new Point(((countStates - 1) - (currState - 1)) * obj.size.Width, 0), obj.size), sprite.PixelFormat));
+            temp = new Bitmap(sprite.Clone(new Rectangle(new Point(((countStates - 1) - (currState - 1)) * onScriptSize.Width, 0), onScriptSize), sprite.PixelFormat));
             obj.texture = temp;
         }
         public SimpleScript(PhysicalObject obj, Image sprite, ScriptEngine.OnEndFunc onEndFunc, int countStates, int delay )
@@ -53,8 +54,26 @@ namespace Bomberman_client.GameClasses
             this.countStates = countStates;
             this.currState = this.countStates;
             this.sprite = new Bitmap (sprite as Bitmap);
+            this.onScriptSize = obj.size;
             
             currTimer.Elapsed += OnTimerEvent;
+        }
+        public SimpleScript(PhysicalObject obj, Image sprite, Size onScriptSize, ScriptEngine.OnEndFunc onEndFunc, int countStates, int delay)
+        {
+            currTimer = new Timer();
+
+            currTimer.Interval = delay;
+
+            this.obj = obj;
+
+            this.onEnd = onEndFunc;
+            this.countStates = countStates;
+            this.currState = this.countStates;
+            this.sprite = new Bitmap(sprite as Bitmap);
+            this.onScriptSize = onScriptSize;
+
+            OnTimerEvent(currTimer, new EventArgs());
+            currTimer.Elapsed += OnTimerEvent; 
         }
     }
 }

@@ -47,7 +47,7 @@ namespace Bomberman_client.GameClasses
             {
                 for (int j = location.X; j < secondBorder; j++)
                 {
-                    map.MapMatrix[i][j] = 2;
+                    map.MapMatrix[i][j] = (int)PhysicalMap.KindOfArea.EXPLOSION;
                 }
             }
         }

@@ -18,6 +18,11 @@ namespace Bomberman_client.GameClasses
             SimpleScript states = new SimpleScript(obj, sprite, onEndFunc, countStates, delay);
             states.currTimer.Enabled = true;
         }
+        public void StartSimpleScript(PhysicalObject obj, Image sprite, Size onScriptSize, OnEndFunc onEndFunc, int delay, int countStates)
+        {
+            SimpleScript states = new SimpleScript(obj, sprite, onScriptSize, onEndFunc, countStates, delay);
+            states.currTimer.Enabled = true;            
+        }
         public void StartExplosion(Explosion explosion, OnEndFunc onEndFunc, int delay, int countStates)
         {
             ExplosionScript script = new ExplosionScript(explosion, onEndFunc, countStates, delay);
