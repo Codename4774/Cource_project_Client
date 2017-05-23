@@ -9,7 +9,7 @@ namespace Bomberman_client.GameClasses
 {
     public class PhysicalMap
     {
-        public enum KindOfArea { NONE = 0, PHYSICACOBJECT = 1, EXPLOSION = 2 };
+        public enum KindOfArea { NONE = 0, PHYSICACOBJECT = 1, EXPLOSION = 2, PLAYER = 3, BOMB = 4 };
 
         private byte[][] mapMatrix1;
         private byte[][] mapMatrix2;

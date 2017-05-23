@@ -68,19 +68,20 @@
     <Compile Include="FormGame.Designer.cs">
       <DependentUpon>FormGame.cs</DependentUpon>
     </Compile>
-    <Compile Include="GameClasses\Explosion.cs" />
+    <Compile Include="GameClasses\Objects\DynamicWall.cs" />
+    <Compile Include="GameClasses\Objects\Explosion.cs" />
     <Compile Include="GameClasses\ExplosionScript.cs" />
-    <Compile Include="GameClasses\PartExplosion.cs" />
+    <Compile Include="GameClasses\Objects\PartExplosion.cs" />
     <Compile Include="GameClasses\GameCore.cs" />
     <Compile Include="GameClasses\SimpleScript.cs" />
     <Compile Include="GameClasses\ScriptEngine.cs" />
     <Compile Include="GameInterfaces\IMovable.cs" />
     <Compile Include="GameClasses\Map.cs" />
-    <Compile Include="GameClasses\Bomb.cs" />
+    <Compile Include="GameClasses\Objects\Bomb.cs" />
     <Compile Include="GameClasses\BombFactory.cs" />
-    <Compile Include="GameClasses\Cell.cs" />
-    <Compile Include="GameClasses\PhysicalObject.cs" />
-    <Compile Include="GameClasses\Player.cs" />
+    <Compile Include="GameClasses\Objects\Cell.cs" />
+    <Compile Include="GameClasses\Objects\PhysicalObject.cs" />
+    <Compile Include="GameClasses\Objects\Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="FormConnect.resx">
