@@ -17,6 +17,8 @@ namespace Bomberman_client.GameClasses
         public List<PhysicalObject> staticWalls;
         public List<DynamicWall> dynamicWalls;
 
+        public List<Player> otherPlayers;
+
         private Graphics graphicControl;
         private BufferedGraphicsContext currentContext = new BufferedGraphicsContext();
         private BufferedGraphics buffer1, buffer2, currBuffer;
@@ -45,22 +47,22 @@ namespace Bomberman_client.GameClasses
         private Size explosionSize;
         private Size wallSize;
 
-        private Image bombTexture;
-        private Image bombExplosionTexture;
-        private Image playerTexture;
-        private Image playerDieTexture;
-        private Image staticWallTexture;
-        private Image dynamicWallTexture;
-        private Image dynamicWallDestroyTexture;
-        private Image explosionCenterTexture;
-        private Image explosionLeftEdgeTexture;
-        private Image explosionRightEdgeTexture;
-        private Image explosionUpEdgeTexture;
-        private Image explosionBottomEdgeTexture;
-        private Image explosionVerticalTexture;
-        private Image explosionHorizontalTexture;
+        public Image bombTexture;
+        public Image bombExplosionTexture;
+        public Image playerTexture;
+        public Image playerDieTexture;
+        public Image staticWallTexture;
+        public Image dynamicWallTexture;
+        public Image dynamicWallDestroyTexture;
+        public Image explosionCenterTexture;
+        public Image explosionLeftEdgeTexture;
+        public Image explosionRightEdgeTexture;
+        public Image explosionUpEdgeTexture;
+        public Image explosionBottomEdgeTexture;
+        public Image explosionVerticalTexture;
+        public Image explosionHorizontalTexture;
 
-
+        public readonly int id;
 
         public void RedrawFunc()
         {
@@ -396,7 +398,7 @@ namespace Bomberman_client.GameClasses
         public GameCore
             (
                 int width, int height, Graphics graphicControl, string playerName, Size playerSize, Size playerOnDeathSize,
-                Size bombSize, Size explosionSize, Size wallSize, string dirResources
+                Size bombSize, Size explosionSize, Size wallSize, string dirResources, int id
             )
         {
             this.map = new PhysicalMap(width, height);
@@ -405,11 +407,13 @@ namespace Bomberman_client.GameClasses
             explosions = new List<Explosion>();
             staticWalls = new List<PhysicalObject>();
             dynamicWalls = new List<DynamicWall>();
+            otherPlayers = new List<Player>();
 
             timer = new Timer();
             delay = 60;
             timer.Interval = delay;
             timer.Tick += TimerEvent;
+            this.id = id;
 
             buffer1 = currentContext.Allocate(graphicControl, new Rectangle(0, 0, width, height));
             buffer2 = currentContext.Allocate(graphicControl, new Rectangle(0, 0, width, height));
@@ -425,7 +429,7 @@ namespace Bomberman_client.GameClasses
             this.playerOnDeathSize = playerOnDeathSize;
 
             LoadImages(dirResources);
-            this.player = new Player(new Point(20, 20), playerTexture, playerSize, playerName, DeletePlayerFromField, bombTexture, bombSize, ExplosionBomb);
+            this.player = new Player(new Point(20, 20), playerTexture, playerSize, playerName, DeletePlayerFromField, bombTexture, bombSize, ExplosionBomb, 0);
             spawnWalls();
         }
     }

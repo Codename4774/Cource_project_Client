@@ -56,6 +56,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Client.cs" />
     <Compile Include="FormConnect.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -82,6 +83,7 @@
     <Compile Include="GameClasses\Objects\Cell.cs" />
     <Compile Include="GameClasses\Objects\PhysicalObject.cs" />
     <Compile Include="GameClasses\Objects\Player.cs" />
+    <Compile Include="MessageAnalyzer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="FormConnect.resx">

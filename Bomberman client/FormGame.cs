@@ -13,6 +13,7 @@ namespace Bomberman_client
     public partial class FormGame : Form
     {
         GameClasses.GameCore gameCore;
+        public Client client;
 
         public FormGame()
         {

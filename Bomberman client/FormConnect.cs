@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Threading;
 
 namespace Bomberman_client
 {
@@ -19,8 +20,11 @@ namespace Bomberman_client
 
         private void ButtonConnect_Click(object sender, EventArgs e)
         {
+
             FormGame formGame = new FormGame();
+            formGame.client = new Client(TextBoxServerName.Text, 11000);
             formGame.Show();
+            ThreadPool.QueueUserWorkItem(formGame.client.StartRecieving);
         }
     }
 }

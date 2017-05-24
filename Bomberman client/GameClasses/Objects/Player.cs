@@ -69,6 +69,7 @@ namespace Bomberman_client.GameClasses
 
         public bool isMoved;
         private Point newLocation = new Point();
+        public readonly int id;
 
         public bool isObjectOnWay(PhysicalMap map)
         {
@@ -448,7 +449,7 @@ namespace Bomberman_client.GameClasses
         }
 
 
-        public Player(Point location, Image sprite, Size spriteSize, string name, DeleteObjectFunc deletePlayerFunc, Image bombSprite, Size bombSize, DeleteObjectFunc deleteBombFunc)
+        public Player(Point location, Image sprite, Size spriteSize, string name, DeleteObjectFunc deletePlayerFunc, Image bombSprite, Size bombSize, DeleteObjectFunc deleteBombFunc, int id)
             : base(location, sprite, spriteSize, deletePlayerFunc)
         {
             thisName = name;
@@ -458,6 +459,7 @@ namespace Bomberman_client.GameClasses
             isDying = false;
             maxCountBombs = 2;
             currCountBombs = 0;
+            this.id = id;
 
             bombFactory = new BombFactory(bombSprite, bombSize, deleteBombFunc, this);
         }
