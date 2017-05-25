@@ -10,11 +10,13 @@ using Tao.Platform.Windows;
 
 namespace Bomberman_client.GameClasses
 {
+    [Serializable]
     public class Player : PhysicalObject, GameInterfaces.IMovable
     {
         public enum Direction { UP, DOWN, LEFT, RIGHT };
 
         public Direction direction { get; set; }
+        [NonSerialized]
         public Direction prevDirection { get; set; }
         public enum AnimState { TURNUP, TURNUP1, TURNUP2, TURNDOWN, TURNDOWN1, TURNDOWN2, TURNLEFT, TURNLEFT1, TURNLEFT2, TURNRIGHT, TURNRIGHT1, TURNRIGHT2 };
         public AnimState currAnimState;
@@ -23,9 +25,11 @@ namespace Bomberman_client.GameClasses
         public BombLevel bombLevel = BombLevel.low;
 
         private int step = 4;
-
+        [NonSerialized]
         public readonly int maxCountBombs;
+        [NonSerialized]
         private int currCountBombs;
+        [NonSerialized]
         public int CurrCountBombs
         {
             get
@@ -37,7 +41,7 @@ namespace Bomberman_client.GameClasses
                 currCountBombs = value;
             }
         }
-
+        [NonSerialized]
         public delegate void SpawnPlayerFunc();
 
         private bool isDead;
@@ -64,10 +68,11 @@ namespace Bomberman_client.GameClasses
                 return isDying;
             }
         }
-
+        [NonSerialized]
         public BombFactory bombFactory;
 
         public bool isMoved;
+        [NonSerialized]
         private Point newLocation = new Point();
         public readonly int id;
 

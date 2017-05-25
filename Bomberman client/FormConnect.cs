@@ -20,11 +20,17 @@ namespace Bomberman_client
 
         private void ButtonConnect_Click(object sender, EventArgs e)
         {
-
             FormGame formGame = new FormGame();
-            formGame.client = new Client(TextBoxServerName.Text, 11000);
-            formGame.Show();
-            ThreadPool.QueueUserWorkItem(formGame.client.StartRecieving);
+            try
+            {
+                formGame.client = new Client(TextBoxServerName.Text, 11000, 11001);
+                formGame.Show();
+                ThreadPool.QueueUserWorkItem(formGame.client.StartRecieving);
+            }
+            catch (Exception exeption)
+            {
+                MessageBox.Show("Cannot connect to the server. Please, try again.", "Bomberman", MessageBoxButtons.OK);
+            }
         }
     }
 }

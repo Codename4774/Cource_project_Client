@@ -11,14 +11,11 @@ namespace Bomberman_client
     public class MessageAnalyzer
     {
         GameClasses.GameCore gameCore;
-        public enum KindMessage { Player = 0, Wall = 1 };
-        public enum KindPlayerMessages { NewDirection = 0, Spawn = 1, Death = 2, PlaceBomb = 3, Connect = 4, Disconnect = 5, Location = 6, StopWalking = 7 };
         public int GetNextValue(byte[] message, ref int i)
         {
             int result = BitConverter.ToInt32(message, i);
             i += sizeof(int);
             return (result);
-
         }
         private Player FindPlayer(int id)
         {
@@ -41,7 +38,7 @@ namespace Bomberman_client
                 kindMessage = GetNextValue(message, ref i);
                 switch (kindMessage)
                 {
-                    case (int)KindMessage.Player:
+                    case (int)KindMessages.KindMessage.Player:
                         {
                             if (gameCore.player.id != idClient)
                             {
@@ -49,13 +46,13 @@ namespace Bomberman_client
                                 int kindPlayerAction = GetNextValue(message, ref i);
                                 switch (kindPlayerAction)
                                 {
-                                    case (int)KindPlayerMessages.NewDirection:
+                                    case (int)KindMessages.KindPlayerMessages.NewDirection:
                                         {
                                             Player searchedPlayer = FindPlayer(idClient);
                                             searchedPlayer.direction = (Player.Direction)GetNextValue(message, ref i);
                                         }
                                         break;
-                                    case (int)KindPlayerMessages.Spawn:
+                                    case (int)KindMessages.KindPlayerMessages.Spawn:
                                         {
                                             Player searchedPlayer = FindPlayer(idClient);
 
@@ -66,12 +63,12 @@ namespace Bomberman_client
                                             searchedPlayer.IsDead = false;
                                         }
                                         break;
-                                    case (int)KindPlayerMessages.Death:
+                                    case (int)KindMessages.KindPlayerMessages.Death:
                                         {
 
                                         }
                                         break;
-                                    case (int)KindPlayerMessages.PlaceBomb:
+                                    case (int)KindMessages.KindPlayerMessages.PlaceBomb:
                                         {
                                             Player searchedPlayer = FindPlayer(idClient);
                                             if (searchedPlayer.CurrCountBombs != searchedPlayer.maxCountBombs)
@@ -81,15 +78,17 @@ namespace Bomberman_client
                                             }
                                         }
                                         break;
-                                    case (int)KindPlayerMessages.Connect:
+                                    case (int)KindMessages.KindPlayerMessages.Connect:
                                         {
+                                            gameCore.otherPlayers.Add(new Player(new Point(20, 20), gameCore.playerTexture, gameCore.playerSize, "", gameCore.DeletePlayerFromField, gameCore.bombTexture, gameCore.bombSize, gameCore.ExplosionBomb, idClient));
                                         }
                                         break;
-                                    case (int)KindPlayerMessages.Disconnect:
+                                    case (int)KindMessages.KindPlayerMessages.Disconnect:
                                         {
+                                            gameCore.otherPlayers.Remove(FindPlayer(idClient));
                                         }
                                         break;
-                                    case (int)KindPlayerMessages.StopWalking:
+                                    case (int)KindMessages.KindPlayerMessages.StopWalking:
                                         {
                                             Player searchedPlayer = FindPlayer(idClient);
                                             searchedPlayer.isMoved = false;
@@ -99,7 +98,7 @@ namespace Bomberman_client
                             }
                         }
                         break;
-                    case (int)KindMessage.Wall:
+                    case (int)KindMessages.KindMessage.Wall:
                         {
                         }
                         break;

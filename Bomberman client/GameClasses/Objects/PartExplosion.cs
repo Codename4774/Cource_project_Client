@@ -7,6 +7,7 @@ using System.Drawing;
 
 namespace Bomberman_client.GameClasses
 {
+    [Serializable]
     public class PartExplosion
     {
         private int countStates;
@@ -16,6 +17,7 @@ namespace Bomberman_client.GameClasses
         public Bitmap currTexture;
         public Size size;
         public Point location;
+        [NonSerialized]
         private Explosion.OnEndAllExplosionFunc onEndFunc;
         public void ChangeState()
         {

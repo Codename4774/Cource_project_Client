@@ -5,8 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 
+
 namespace Bomberman_client.GameClasses
 {
+    [Serializable]
     public class Cell
     {
         private Point location;
@@ -32,7 +34,6 @@ namespace Bomberman_client.GameClasses
                 return location.Y;
             }
         }
-
         public Image texture { get; set; }
         public Cell(Point location, Image texture)
         {

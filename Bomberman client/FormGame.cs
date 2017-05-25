@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Threading;
 
 namespace Bomberman_client
 {
@@ -25,12 +26,13 @@ namespace Bomberman_client
             Graphics graphicsControl = MainField.CreateGraphics();
             gameCore = new GameClasses.GameCore
                 (
-                    MainField.Width, MainField.Height, graphicsControl, "azaza",
-                    new Size(24, 32), new Size(24, 24), new Size(24, 24),  new Size(24, 24), new Size(24, 24), (Environment.CurrentDirectory + "\\Resources\\")
+                    MainField.Width, MainField.Height, graphicsControl, "azaz", client, client.id
                 );
             this.KeyUp += gameCore.KeyUpEvent;
             this.KeyPress += gameCore.KeyPressEvent;
+            client.gameCore = gameCore;
             gameCore.startCore();
+            ThreadPool.QueueUserWorkItem(client.StartRecieving);
         }
     }
 }

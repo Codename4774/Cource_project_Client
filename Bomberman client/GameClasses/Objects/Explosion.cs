@@ -4,9 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
 
 namespace Bomberman_client.GameClasses
 {
+    [Serializable]
     public class Explosion
     {
         private int radius;
@@ -16,9 +19,12 @@ namespace Bomberman_client.GameClasses
         public List<PartExplosion> partsExplosionUp;
         public PartExplosion partExplosionCenter;
         private Point explosionLocation;
+        [NonSerialized]
         private Point newLocation;
         private int countParts;
+        [NonSerialized]
         public delegate void OnEndAllExplosionFunc(object sender);
+        [NonSerialized]
         private OnEndAllExplosionFunc onEndAllExplosionFunc;
         Size size;
         private enum ExplosionDirection { UP, DOWN, LEFT, RIGHT };
@@ -51,6 +57,13 @@ namespace Bomberman_client.GameClasses
             }
         }
 
+        public byte[] SerializeExplosion(BinaryFormatter serializer)
+        {
+            MemoryStream data = new MemoryStream();
+            serializer.Serialize(data, this);
+
+            return data.ToArray();
+        }
         private bool canWePlaceExplosion(int X, int Y, PhysicalMap map, ExplosionDirection direction)
         {
             bool result = false;

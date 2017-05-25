@@ -7,6 +7,9 @@ using System.Threading;
 using System.Net.Sockets;
 using System.Net;
 using System.Windows.Forms;
+using System.Drawing;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
 
 namespace Bomberman_client
 {
@@ -14,31 +17,40 @@ namespace Bomberman_client
     {
         public readonly IPHostEntry ipHost;
         public readonly IPAddress ipAdress;
-        public readonly int port;
+        public readonly int portControl;
+        public readonly int portData;
         private int bufferSize;
-        public readonly IPEndPoint ipEndPoint;
-        public readonly Socket socket;
+        public readonly IPEndPoint ipEndPointControl;
+        public  IPEndPoint ipEndPointData;
+        public readonly Socket socketControl;
+        public readonly UdpClient socketData;
         private byte[] receivedData;
-        private int maxCountMessages;
-        private int countReceivedMessages;
+        public GameClasses.GameCore gameCore;
+        private BinaryFormatter serializer;
+        public readonly int id;
 
 
-        public Client(string host, int port)
+        public Client(string host, int portControl, int portData)
         {
             this.ipHost = Dns.GetHostEntry(host);
 
-            this.port = port;
+            this.portControl = portControl;
             this.ipAdress = ipHost.AddressList[0];
-            this.bufferSize = 2048;
-            this.maxCountMessages = 10;
+            this.bufferSize = 1024 * 1024;
 
-            this.ipEndPoint = new IPEndPoint(ipAdress, port);
-            this.socket = new Socket(ipAdress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+            this.ipEndPointControl = new IPEndPoint(ipAdress, portControl);
+            this.ipEndPointData = new IPEndPoint(IPAddress.Any, portData);
+
+            this.socketControl = new Socket(ipAdress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+            //this.socketData = new UdpClient(portData);
+            this.serializer = new BinaryFormatter();
             receivedData = new byte[bufferSize];
 
             try
             {
-                socket.Connect(ipEndPoint);
+                socketControl.Connect(ipEndPointControl);
+                int countReceivedData = socketControl.Receive(receivedData);
+                id = BitConverter.ToInt32(receivedData, 0);
             }
             catch(Exception e)
             {
@@ -46,17 +58,35 @@ namespace Bomberman_client
             }
         }
 
-        private void ProcessingData(object state)
+        private void GetBufferFromServer(byte[] data)
         {
-            MessageBox.Show(Encoding.UTF8.GetString(receivedData), "Header", MessageBoxButtons.OK);
+            MemoryStream stream = new MemoryStream(data);
+            Bitmap buffer = (Bitmap)serializer.Deserialize(stream);
+            lock (gameCore.currBuffer)
+            {
+                gameCore.currBuffer.Graphics.DrawImage(buffer, new Point(0, 0));
+            }
+        }
+
+        public void SendMessageToServer(params int[] data)
+        {
+            List<byte> message = new List<byte>();
+            for (int i = 0; i < data.Length; i++ )
+            {
+                message.AddRange(BitConverter.GetBytes(data[i]));
+            }
+            SocketAsyncEventArgs sendArgs = new SocketAsyncEventArgs();
+            sendArgs.SetBuffer(message.ToArray(), 0, message.Count);
+            socketControl.SendAsync(sendArgs);
         }
 
         public void StartRecieving(object state)
         {
             while (true)
             {
-                countReceivedMessages = socket.Receive(receivedData);
-                ThreadPool.QueueUserWorkItem(ProcessingData);
+                socketControl.Receive(receivedData);
+
+                GetBufferFromServer(receivedData);
             }
         }
     }

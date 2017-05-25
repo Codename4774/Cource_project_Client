@@ -7,6 +7,7 @@ using System.Drawing;
 
 namespace Bomberman_client.GameClasses
 {
+    [Serializable]
     public class PhysicalObject : Cell
     {
         public readonly Size size;
@@ -30,8 +31,9 @@ namespace Bomberman_client.GameClasses
                 }
             }
         }
-
+        [NonSerialized]
         public delegate void DeleteObjectFunc(PhysicalObject obj);
+        [NonSerialized]
         protected DeleteObjectFunc deleteObjectFunc;
 
         public PhysicalObject(Point location, Image texture)
