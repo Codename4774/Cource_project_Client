@@ -20,10 +20,10 @@ namespace Bomberman_client
 
         private void ButtonConnect_Click(object sender, EventArgs e)
         {
-            FormGame formGame = new FormGame();
             try
             {
-                formGame.client = new Client(TextBoxServerName.Text, 11000, 11001);
+                Client client = new Client(TextBoxServerName.Text, 11000, 11001);
+                FormGame formGame = new FormGame(client);
                 formGame.Show();
                 ThreadPool.QueueUserWorkItem(formGame.client.StartRecieving);
             }

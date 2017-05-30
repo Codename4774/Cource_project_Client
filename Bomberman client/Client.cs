@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using System.Drawing;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
+using Bomberman_server;
 
 namespace Bomberman_client
 {
@@ -61,10 +62,10 @@ namespace Bomberman_client
         private void GetBufferFromServer(byte[] data)
         {
             MemoryStream stream = new MemoryStream(data);
-            Bitmap buffer = (Bitmap)serializer.Deserialize(stream);
-            lock (gameCore.currBuffer)
+            ObjectsLists buffer = (ObjectsLists)serializer.Deserialize(stream);
+            lock (gameCore.objectsList)
             {
-                gameCore.currBuffer.Graphics.DrawImage(buffer, new Point(0, 0));
+                gameCore.objectsList = buffer;
             }
         }
 

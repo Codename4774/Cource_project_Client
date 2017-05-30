@@ -8,3 +8,5 @@ E:\my work\My Git dir\Bomberman client\Bomberman client\obj\Debug\Bomberman_clie
 E:\my work\My Git dir\Bomberman client\Bomberman client\obj\Debug\Bomberman client.csproj.GenerateResource.Cache
 E:\my work\My Git dir\Bomberman client\Bomberman client\obj\Debug\Bomberman client.exe
 E:\my work\My Git dir\Bomberman client\Bomberman client\obj\Debug\Bomberman client.pdb
+E:\my work\My Git dir\Bomberman client\Bomberman client\bin\Debug\Bomberman server.exe
+E:\my work\My Git dir\Bomberman client\Bomberman client\bin\Debug\Bomberman server.pdb

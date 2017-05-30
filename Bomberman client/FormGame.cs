@@ -16,23 +16,25 @@ namespace Bomberman_client
         GameClasses.GameCore gameCore;
         public Client client;
 
-        public FormGame()
+        public FormGame(Client client)
         {
             InitializeComponent();
-        }
-
-        private void FormGame_Load(object sender, EventArgs e)
-        {
+            this.client = client;
             Graphics graphicsControl = MainField.CreateGraphics();
             gameCore = new GameClasses.GameCore
                 (
-                    MainField.Width, MainField.Height, graphicsControl, "azaz", client, client.id
+                    MainField.Width, MainField.Height, graphicsControl, "azaz", client, client.id, (Environment.CurrentDirectory + "\\Resources\\")
                 );
             this.KeyUp += gameCore.KeyUpEvent;
             this.KeyPress += gameCore.KeyPressEvent;
             client.gameCore = gameCore;
+        }
+
+        private void FormGame_Load(object sender, EventArgs e)
+        {
+
+            //ThreadPool.QueueUserWorkItem(client.StartRecieving);
             gameCore.startCore();
-            ThreadPool.QueueUserWorkItem(client.StartRecieving);
         }
     }
 }
