@@ -22,14 +22,15 @@ namespace Bomberman_client
         {
             try
             {
-                Client client = new Client(TextBoxServerName.Text, 11000, 11001);
+                Client client = new Client(TextBoxServerName.Text, 11000, TextBoxNickname.Text);
                 FormGame formGame = new FormGame(client);
                 formGame.Show();
+                this.Hide();
                 ThreadPool.QueueUserWorkItem(formGame.client.StartRecieving);
             }
             catch (Exception exeption)
             {
-                MessageBox.Show("Cannot connect to the server. Please, try again.", "Bomberman", MessageBoxButtons.OK);
+                MessageBox.Show(exeption.ToString(), "Bomberman", MessageBoxButtons.OK);
             }
         }
     }

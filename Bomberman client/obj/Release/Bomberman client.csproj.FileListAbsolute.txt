@@ -1,0 +1,12 @@
+E:\my work\My Git dir\Bomberman client\Bomberman client\bin\Release\Bomberman client.exe.config
+E:\my work\My Git dir\Bomberman client\Bomberman client\bin\Release\Bomberman client.exe
+E:\my work\My Git dir\Bomberman client\Bomberman client\bin\Release\Bomberman client.pdb
+E:\my work\My Git dir\Bomberman client\Bomberman client\bin\Release\Bomberman server.exe
+E:\my work\My Git dir\Bomberman client\Bomberman client\bin\Release\Bomberman server.pdb
+E:\my work\My Git dir\Bomberman client\Bomberman client\obj\Release\Bomberman client.csprojResolveAssemblyReference.cache
+E:\my work\My Git dir\Bomberman client\Bomberman client\obj\Release\Bomberman_client.FormConnect.resources
+E:\my work\My Git dir\Bomberman client\Bomberman client\obj\Release\Bomberman_client.FormGame.resources
+E:\my work\My Git dir\Bomberman client\Bomberman client\obj\Release\Bomberman_client.Properties.Resources.resources
+E:\my work\My Git dir\Bomberman client\Bomberman client\obj\Release\Bomberman client.csproj.GenerateResource.Cache
+E:\my work\My Git dir\Bomberman client\Bomberman client\obj\Release\Bomberman client.exe
+E:\my work\My Git dir\Bomberman client\Bomberman client\obj\Release\Bomberman client.pdb

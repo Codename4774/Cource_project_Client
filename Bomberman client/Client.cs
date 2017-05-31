@@ -24,32 +24,32 @@ namespace Bomberman_client
         public readonly IPEndPoint ipEndPointControl;
         public  IPEndPoint ipEndPointData;
         public readonly Socket socketControl;
-        public readonly UdpClient socketData;
         private byte[] receivedData;
         public GameClasses.GameCore gameCore;
         private BinaryFormatter serializer;
         public readonly int id;
 
 
-        public Client(string host, int portControl, int portData)
+        public Client(string host, int portControl, string playerName)
         {
-            this.ipHost = Dns.GetHostEntry(host);
+            //this.ipHost = Dns.GetHostEntry(host);
 
             this.portControl = portControl;
-            this.ipAdress = ipHost.AddressList[0];
+            this.ipAdress = IPAddress.Parse(host);
             this.bufferSize = 1024 * 1024;
 
             this.ipEndPointControl = new IPEndPoint(ipAdress, portControl);
-            this.ipEndPointData = new IPEndPoint(IPAddress.Any, portData);
 
             this.socketControl = new Socket(ipAdress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-            //this.socketData = new UdpClient(portData);
             this.serializer = new BinaryFormatter();
             receivedData = new byte[bufferSize];
 
             try
             {
                 socketControl.Connect(ipEndPointControl);
+                MemoryStream playerNameBuffer = new MemoryStream();
+                serializer.Serialize(playerNameBuffer, playerName);
+                socketControl.Send(playerNameBuffer.ToArray());
                 int countReceivedData = socketControl.Receive(receivedData);
                 id = BitConverter.ToInt32(receivedData, 0);
             }
@@ -62,11 +62,16 @@ namespace Bomberman_client
         private void GetBufferFromServer(byte[] data)
         {
             MemoryStream stream = new MemoryStream(data);
-            ObjectsLists buffer = (ObjectsLists)serializer.Deserialize(stream);
-            lock (gameCore.objectsList)
+            try
             {
-                gameCore.objectsList = buffer;
+                ObjectsLists buffer = (ObjectsLists)serializer.Deserialize(stream);
+                lock (gameCore.objectsList)
+                {
+                    gameCore.objectsList = buffer;
+                }
             }
+            catch
+            {}
         }
 
         public void SendMessageToServer(params int[] data)
@@ -81,13 +86,20 @@ namespace Bomberman_client
             socketControl.SendAsync(sendArgs);
         }
 
+        public void Dispose()
+        {
+            socketControl.Shutdown(SocketShutdown.Both);
+            socketControl.Disconnect(false);
+            socketControl.Close();
+        }
         public void StartRecieving(object state)
         {
             while (true)
             {
-                socketControl.Receive(receivedData);
+                byte[] temp = new byte[1024 * 1024];
+                socketControl.Receive(temp);
 
-                GetBufferFromServer(receivedData);
+                GetBufferFromServer(temp);
             }
         }
     }

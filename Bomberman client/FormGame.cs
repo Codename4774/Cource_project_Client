@@ -23,7 +23,7 @@ namespace Bomberman_client
             Graphics graphicsControl = MainField.CreateGraphics();
             gameCore = new GameClasses.GameCore
                 (
-                    MainField.Width, MainField.Height, graphicsControl, "azaz", client, client.id, (Environment.CurrentDirectory + "\\Resources\\")
+                    MainField.Width, MainField.Height, graphicsControl, client, client.id, (Environment.CurrentDirectory + "\\Resources\\")
                 );
             this.KeyUp += gameCore.KeyUpEvent;
             this.KeyPress += gameCore.KeyPressEvent;
@@ -35,6 +35,12 @@ namespace Bomberman_client
 
             //ThreadPool.QueueUserWorkItem(client.StartRecieving);
             gameCore.startCore();
+        }
+
+        private void FormGame_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            gameCore.Dispose();
+            client.Dispose();
         }
     }
 }
