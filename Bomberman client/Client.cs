@@ -59,9 +59,9 @@ namespace Bomberman_client
             }
         }
 
-        private void GetBufferFromServer(byte[] data)
+        private void GetBufferFromServer(byte[] data, int count)
         {
-            MemoryStream stream = new MemoryStream(data);
+            MemoryStream stream = new MemoryStream(data, 0, count);
             try
             {
                 ObjectsLists buffer = (ObjectsLists)serializer.Deserialize(stream);
@@ -71,7 +71,9 @@ namespace Bomberman_client
                 }
             }
             catch
-            {}
+            {
+                //MessageBox.Show(e.ToString(), "Bomberman", MessageBoxButtons.OK);
+            }
         }
 
         public void SendMessageToServer(params int[] data)
@@ -97,9 +99,9 @@ namespace Bomberman_client
             while (true)
             {
                 byte[] temp = new byte[1024 * 1024];
-                socketControl.Receive(temp);
+                int count = socketControl.Receive(temp);
 
-                GetBufferFromServer(temp);
+                GetBufferFromServer(temp, count);
             }
         }
     }

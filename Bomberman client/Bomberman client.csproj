@@ -93,6 +93,10 @@
       <Project>{e44f0225-beba-4d33-a491-07fe2c48d9f7}</Project>
       <Name>Bomberman server</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\CommonClasses\CommonClasses\CommonClasses.csproj">
+      <Project>{b6d35e4a-d2eb-457d-a252-0c658bc5dd13}</Project>
+      <Name>CommonClasses</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
