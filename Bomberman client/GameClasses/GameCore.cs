@@ -22,6 +22,7 @@ namespace Bomberman_client.GameClasses
 
         private Client client;
         public ObjectsLists objectsList;
+        public ObjectsLists bufferObjectsList;
 
         public int delay;
         private System.Timers.Timer timer;
@@ -51,49 +52,47 @@ namespace Bomberman_client.GameClasses
 
         private void DrawPlayers(object state)
         {
-            lock (currBuffer)
+            lock (currBuffer.Graphics)
             {
                 foreach (Player player in objectsList.players)
                 {
                     if (!player.IsDead)
                     {
-                        lock (player)
+
+                        if (!player.IsDying)
                         {
-                            if (!player.IsDying)
+                            currBuffer.Graphics.DrawImage(player.GetAnimState(playerTexture), player.X, player.Y);
+                        }
+                        else
+                        {
+                            lock (playerDieTexture)
                             {
-                                currBuffer.Graphics.DrawImage(player.GetAnimState(playerTexture), player.X, player.Y);
-                            }
-                            else
-                            {
-                                lock (playerDieTexture)
-                                {
-                                    currBuffer.Graphics.DrawString(player.PlayerName, font, brush, player.X, player.Y);
-                                }
+                                currBuffer.Graphics.DrawImage(playerDieTexture, player.X, player.Y, new Rectangle(new Point(player.currSpriteOffset, 0), player.size), GraphicsUnit.Pixel);
                             }
                         }
+
                     }
                 }
             }
         }
         private void DrawStaticWalls(object state)
         {
-            lock (currBuffer)
+            lock (currBuffer.Graphics)
             {
                 for (int i = 0; i < objectsList.staticWalls.Count; i++)
                 {
-                    lock (objectsList.staticWalls[i])
+
+                    lock (staticWallTexture)
                     {
-                        lock (staticWallTexture)
-                        {
-                            currBuffer.Graphics.DrawImage(staticWallTexture, objectsList.staticWalls[i].X, objectsList.staticWalls[i].Y);
-                        }
+                        currBuffer.Graphics.DrawImage(staticWallTexture, objectsList.staticWalls[i].X, objectsList.staticWalls[i].Y);
                     }
+
                 }
             }
         }
         private void DrawDynamicWalls(object state)
         {
-            lock (currBuffer)
+            lock (currBuffer.Graphics)
             {
                 for (int i = 0; i < objectsList.dynamicWalls.Count; i++)
                 {
@@ -120,11 +119,11 @@ namespace Bomberman_client.GameClasses
 
         private void DrawExplosions(object state)
         {
-            lock (currBuffer)
+            lock (currBuffer.Graphics)
             {
                 for (int i = 0; i < objectsList.explosions.Count; i++)
                 {
-                    lock (objectsList.explosions[i])
+                    lock (explosionsTexture)
                     {
                         objectsList.explosions[i].DrawExplosion(currBuffer, explosionsTexture);
                     }
@@ -133,25 +132,20 @@ namespace Bomberman_client.GameClasses
         }
         private void DrawBombs(object state)
         {
-            lock (currBuffer)
+            lock (currBuffer.Graphics)
             {
-                lock (objectsList.bombs)
+                for (int i = 0; i < objectsList.bombs.Count; i++)
                 {
-                    for (int i = 0; i < objectsList.bombs.Count; i++)
+
+                    lock (bombTexture)
                     {
-                        lock (objectsList.bombs[i])
+                        if (objectsList.bombs[i].isBlowedUp)
                         {
-                            lock (bombTexture)
-                            {
-                                if (objectsList.bombs[i].isBlowedUp)
-                                {
-                                    currBuffer.Graphics.DrawImage(bombExplosionTexture, objectsList.bombs[i].X, objectsList.bombs[i].Y, new Rectangle(new Point(objectsList.bombs[i].currSpriteOffset, 0), objectsList.bombs[i].size), GraphicsUnit.Pixel);
-                                }
-                                else
-                                {
-                                    currBuffer.Graphics.DrawImage(bombTexture, objectsList.bombs[i].X, objectsList.bombs[i].Y);
-                                }
-                            }
+                            currBuffer.Graphics.DrawImage(bombExplosionTexture, objectsList.bombs[i].X, objectsList.bombs[i].Y, new Rectangle(new Point(objectsList.bombs[i].currSpriteOffset, 0), objectsList.bombs[i].size), GraphicsUnit.Pixel);
+                        }
+                        else
+                        {
+                            currBuffer.Graphics.DrawImage(bombTexture, objectsList.bombs[i].X, objectsList.bombs[i].Y);
                         }
                     }
                 }
@@ -160,22 +154,15 @@ namespace Bomberman_client.GameClasses
 
         private void DrawPlayerNames(object state)
         {
-            lock (currBuffer)
+            lock (currBuffer.Graphics)
             {
                 foreach (Player player in objectsList.players)
                 {
                     if (!player.IsDead)
                     {
-                        lock (player)
+                        if (!player.IsDying)
                         {
-                            if (!player.IsDying)
-                            {
-                                currBuffer.Graphics.DrawString(player.PlayerName, font, brush, player.X, player.Y - (font.Size * 2));
-                            }
-                            else
-                            {
-                                currBuffer.Graphics.DrawImage(playerDieTexture, player.X, player.Y, new Rectangle(new Point(player.currSpriteOffset, 0), player.size), GraphicsUnit.Pixel);
-                            }
+                            currBuffer.Graphics.DrawString(player.PlayerName, font, brush, player.X, player.Y - (font.Size * 2));
                         }
                     }
                 }
@@ -213,6 +200,7 @@ namespace Bomberman_client.GameClasses
             {
                 currBuffer = buffer1;
             }
+            objectsList = bufferObjectsList;
         }
 
         public void TimerEvent(object sender, EventArgs e)
@@ -379,6 +367,7 @@ namespace Bomberman_client.GameClasses
             this.id = id;
             this.client = client;
             this.objectsList = new ObjectsLists();
+            this.bufferObjectsList = new ObjectsLists();
             this.explosionsTexture = new List<Bitmap>();
 
             buffer1 = currentContext.Allocate(graphicControl, new Rectangle(0, 0, width, height));

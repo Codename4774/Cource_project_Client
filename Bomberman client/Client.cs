@@ -28,6 +28,8 @@ namespace Bomberman_client
         public GameClasses.GameCore gameCore;
         private BinaryFormatter serializer;
         public readonly int id;
+        private EndPoint dataEndPoint;
+
 
 
         public Client(string host, int portControl, string playerName)
@@ -59,20 +61,29 @@ namespace Bomberman_client
             }
         }
 
-        private void GetBufferFromServer(byte[] data, int count)
+        private void GetBufferFromServer(object sender, SocketAsyncEventArgs e)
         {
-            MemoryStream stream = new MemoryStream(data, 0, count);
+
+            MemoryStream stream = new MemoryStream(e.Buffer, 0, e.BytesTransferred);
             try
             {
                 ObjectsLists buffer = (ObjectsLists)serializer.Deserialize(stream);
-                lock (gameCore.objectsList)
+                lock (gameCore.bufferObjectsList)
                 {
-                    gameCore.objectsList = buffer;
+                    gameCore.bufferObjectsList = buffer;
                 }
             }
-            catch
+            catch(Exception exception)
             {
-                //MessageBox.Show(e.ToString(), "Bomberman", MessageBoxButtons.OK);
+                MessageBox.Show(exception.ToString(), "Bomberman", MessageBoxButtons.OK);
+            }
+            finally
+            {
+                SocketAsyncEventArgs eventArgs = new SocketAsyncEventArgs();
+                eventArgs.Completed += GetBufferFromServer;
+                byte[] temp = new byte[1024 * 1024];
+                eventArgs.SetBuffer(temp, 0, 1024 * 1024);
+                (sender as Socket).ReceiveAsync(eventArgs);
             }
         }
 
@@ -96,13 +107,11 @@ namespace Bomberman_client
         }
         public void StartRecieving(object state)
         {
-            while (true)
-            {
-                byte[] temp = new byte[1024 * 1024];
-                int count = socketControl.Receive(temp);
-
-                GetBufferFromServer(temp, count);
-            }
+            SocketAsyncEventArgs eventArgs = new SocketAsyncEventArgs();
+            eventArgs.Completed += GetBufferFromServer;
+            byte[] temp = new byte[1024 * 1024];
+            eventArgs.SetBuffer(temp, 0, 1024 * 1024);
+            socketControl.ReceiveAsync(eventArgs);
         }
     }
 }
