@@ -58,9 +58,11 @@
             this.ClientSize = new System.Drawing.Size(631, 404);
             this.Controls.Add(this.MainField);
             this.Controls.Add(this.PanelInfo);
+            this.DoubleBuffered = true;
             this.Name = "FormGame";
-            this.Text = "FormGame";
+            this.Text = "Bomberman";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormGame_FormClosing);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FormGame_FormClosed);
             this.Load += new System.EventHandler(this.FormGame_Load);
             ((System.ComponentModel.ISupportInitialize)(this.MainField)).EndInit();
             this.ResumeLayout(false);

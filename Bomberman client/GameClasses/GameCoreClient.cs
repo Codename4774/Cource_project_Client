@@ -11,7 +11,7 @@ using System.Timers;
 
 namespace Bomberman_client.GameClasses
 {
-    public class GameCore
+    public class GameCoreClient
     {
         private Graphics graphicControl;
         private BufferedGraphicsContext currentContext = new BufferedGraphicsContext();
@@ -48,7 +48,6 @@ namespace Bomberman_client.GameClasses
         public List<Bitmap> explosionsTexture;
 
         public int id;
-
 
         private void DrawPlayers(object state)
         {
@@ -185,9 +184,9 @@ namespace Bomberman_client.GameClasses
             lock (currBuffer)
             {
                 currBuffer.Render();
-                currBuffer.Graphics.Clear(buffColor);
             }
             ChangeBuffer();
+            currBuffer.Graphics.Clear(buffColor);
             CalcBuff();
         }
         public void ChangeBuffer()
@@ -349,11 +348,11 @@ namespace Bomberman_client.GameClasses
             this.dynamicWallTexture = new Bitmap(resDir + "Walls\\DynamicWall.png");
             this.dynamicWallDestroyTexture = new Bitmap(resDir + "Walls\\DynamicWallDestroy.png");
         }
-        public void startCore()
+        public void StartCore()
         {
             timer.Start();
         }
-        public GameCore
+        public GameCoreClient
             (
                 int width, int height, Graphics graphicControl, Client client, int id, string dirResources
             )

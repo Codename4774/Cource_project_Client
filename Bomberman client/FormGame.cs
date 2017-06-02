@@ -13,7 +13,7 @@ namespace Bomberman_client
 {
     public partial class FormGame : Form
     {
-        GameClasses.GameCore gameCore;
+        GameClasses.GameCoreClient gameCore;
         public Client client;
 
         public FormGame(Client client)
@@ -21,7 +21,7 @@ namespace Bomberman_client
             InitializeComponent();
             this.client = client;
             Graphics graphicsControl = MainField.CreateGraphics();
-            gameCore = new GameClasses.GameCore
+            gameCore = new GameClasses.GameCoreClient
                 (
                     MainField.Width, MainField.Height, graphicsControl, client, client.id, (Environment.CurrentDirectory + "\\Resources\\")
                 );
@@ -34,13 +34,19 @@ namespace Bomberman_client
         {
 
             //ThreadPool.QueueUserWorkItem(client.StartRecieving);
-            gameCore.startCore();
+            gameCore.StartCore();
         }
 
         private void FormGame_FormClosing(object sender, FormClosingEventArgs e)
         {
             gameCore.Dispose();
             client.Dispose();
+        }
+
+        private void FormGame_FormClosed(object sender, FormClosedEventArgs e)
+        {
+
+            Application.Exit();
         }
     }
 }

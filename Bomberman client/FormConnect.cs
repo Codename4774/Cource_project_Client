@@ -20,17 +20,31 @@ namespace Bomberman_client
 
         private void ButtonConnect_Click(object sender, EventArgs e)
         {
-            try
+            if (TextBoxServerName.Text.Length <= 0)
             {
-                Client client = new Client(TextBoxServerName.Text, 11000, TextBoxNickname.Text);
-                FormGame formGame = new FormGame(client);
-                formGame.Show();
-                this.Hide();
-                ThreadPool.QueueUserWorkItem(formGame.client.StartRecieving);
+                MessageBox.Show("Please, fill server adres field", "Bomberman", MessageBoxButtons.OK);
             }
-            catch (Exception exeption)
+            else
             {
-                MessageBox.Show(exeption.ToString(), "Bomberman", MessageBoxButtons.OK);
+                if (TextBoxNickname.Text.Length <= 0)
+                {
+                    MessageBox.Show("Please, fill nickname field", "Bomberman", MessageBoxButtons.OK);
+                }
+                else
+                {
+                    try
+                    {
+                        Client client = new Client(TextBoxServerName.Text, 11000, TextBoxNickname.Text);
+                        FormGame formGame = new FormGame(client);
+                        formGame.Show();
+                        this.Hide();
+                        ThreadPool.QueueUserWorkItem(formGame.client.StartRecieving);
+                    }
+                    catch (Exception exeption)
+                    {
+                        MessageBox.Show(exeption.Message, "Bomberman", MessageBoxButtons.OK);
+                    }
+                }
             }
         }
     }
